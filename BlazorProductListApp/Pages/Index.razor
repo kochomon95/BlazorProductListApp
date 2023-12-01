@@ -1,0 +1,52 @@
+﻿@page "/"
+@using BlazorProductListApp.Models
+@inject HttpClient HttpClient
+
+<h1>Product List</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in products)
+        {
+            <tr>
+                <td>@product.Id</td>
+                <td>@product.Name</td>
+                <td>@product.Price</td>
+                <td><button @onclick="() => ShowProductDetail(product)">Details</button></td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<Product> products = new List<Product>();
+    private Product selectedProduct;
+    protected override async Task OnInitializedAsync()
+    {
+        products = await HttpClient.GetFromJsonAsync<List<Product>>("api/product");
+    }
+    private void ShowProductDetail(Product product)
+    {
+        selectedProduct = product;
+    }
+}
+<style>
+    /* wwwroot/css/site.css */
+    .popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border: 1px solid #ccc;
+    }
+</style>
